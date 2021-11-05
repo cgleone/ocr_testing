@@ -9,13 +9,13 @@ from datetime import datetime
 import accuracy_testing as accuracy
 from PIL import Image
 
-def get_text(file, delete_after=False):
+def get_text(file):
 
     txt_file = create_output_file(file)
     path = 'prepped_pics/' + file
 
     img = cv2.imread(path)
-    img = pre.deskew(img)
+    # img = pre.deskew_test(img) DO NOT USE THIS RIGHT NOW
     #img = pre.rescale(img, 2, 2)
     #img = pre.canny(img)
     #img = pre.erode(img)
@@ -30,8 +30,7 @@ def get_text(file, delete_after=False):
     add_to_file(txt_file, converted, pre.method_list, accuracies)
     print(accuracies)
 
-    if delete_after:
-        os.remove(path)  # get rid of the extra image file once we're done with it, if we made one
+
 
 
 def convert_pdf(path):
@@ -82,29 +81,34 @@ def prep_image(file, noisify=False):
 
     path = 'pics/' + file
     delete_after = False
+    new_name = file
     if file.endswith('.pdf'):
         path = convert_pdf(path)
+        new_name = file.rstrip('.pdf') + '.jpg'
         delete_after = True
 
     if noisify:
         with Image.open(path) as img:
-            result = accuracy.noisify(img, rotation=0, brightness=1, contrast=0.1, sharpness=1)
+            result = accuracy.noisify(img, rotation=0, brightness=1, contrast=1, sharpness=1)
             # result.show()
 
     result = result.convert("RGB")
-    result.save('prepped_pics/' + file)
+    result.save('prepped_pics/' +new_name)
 
-    return delete_after
+    if delete_after:
+        os.remove(path)  # get rid of the extra image file once we're done with it, if we made one
+
+    return new_name
 
 
 if __name__ == '__main__':
 
-    file = 'report_body_1.jpg'
-    delete_after = prep_image(file, noisify=True)
+    file = 'report_body_2.pdf'
+    new_file = prep_image(file, noisify=True)
 
     start_time = time.time()
 
-    get_text(file, delete_after)
+    get_text(new_file)
 
     executionTime = (time.time() - start_time)
     print("Execution Time: {} seconds".format(round(executionTime, 2)))
