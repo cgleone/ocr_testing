@@ -7,7 +7,7 @@ __pycache__/
 *.so
 
 # other
-converted_text/*
+conversion_reports/*
 converted_jpgs/*
 .DS_Store
 .idea/

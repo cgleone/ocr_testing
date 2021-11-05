@@ -53,7 +53,7 @@ def create_output_file(img_name):
 
     # dd/mm/YY H:M:S
     dt = now.strftime("_%d_%m_%Y_%H:%M:%S")
-    file = open('converted_text/' + txt_name + dt + '.txt', "w+")
+    file = open('conversion_reports/' + txt_name + dt + '.txt', "w+")
     return file
 
 
