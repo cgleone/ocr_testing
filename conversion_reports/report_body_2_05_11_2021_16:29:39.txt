@@ -1,0 +1,9 @@
+
+
+----------------------------------TEXT COMPLETE----------------------------------------
+
+
+The accuracy of this OCR reading is shown below:
+
+SequenceMatcher accuracy ratio (converted:original) = 0.0
+Levenshtein accuracy ratio (converted:original) = 0.0

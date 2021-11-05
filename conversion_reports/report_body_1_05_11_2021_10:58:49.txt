@@ -1,0 +1,31 @@
+ 
+
+ 
+
+   
+
+sve
+pour? an? 428 3 uk
+oie one oo? er ew \
+ears ee ew y eat ww?
+ye ov\ yours eet oye guo> ane a
+: \ae*
+ow aw? yon et 590 0 NN yon sy
+a yo gw?
+9% “pours ?
+ae cor 0 '
+.yyid 9
+“y
+
+ 
+
+
+----------------------------------TEXT COMPLETE----------------------------------------
+
+The pre-processing methods used in this OCR text conversion were:
+Deskew from an original angle of 180.0
+
+The accuracy of this OCR reading is shown below:
+
+SequenceMatcher accuracy ratio (converted:original) = 0.016674840608141245
+Levenshtein accuracy ratio (converted:original) = 0.12260912211868563

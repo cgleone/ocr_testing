@@ -1,0 +1,8 @@
+vo Pp 2
+
+
+----------------------------------TEXT COMPLETE----------------------------------------
+
+The pre-processing methods used in this OCR text conversion were:
+Deskew from an original angle of 90.0
+Rescaling  by fx=0.1 and fy=0.1

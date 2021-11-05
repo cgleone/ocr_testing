@@ -1,0 +1,12 @@
+9 s YY )
+
+9 I'm Cathleen and I'm testing this thing 123
+
+a
+
+
+----------------------------------TEXT COMPLETE----------------------------------------
+
+The pre-processing methods used in this OCR text conversion were:
+Deskew from an original angle of 90.0
+Rescaling  by fx=0.2 and fy=0.2

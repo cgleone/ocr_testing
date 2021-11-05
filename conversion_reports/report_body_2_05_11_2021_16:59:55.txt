@@ -1,0 +1,12 @@
+ 
+
+
+----------------------------------TEXT COMPLETE----------------------------------------
+
+The pre-processing methods used in this OCR text conversion were:
+Deskew from an original angle of -90.0
+
+The accuracy of this OCR reading is shown below:
+
+SequenceMatcher accuracy ratio (converted:original) = 0.0
+Levenshtein accuracy ratio (converted:original) = 0.002859185132237343

@@ -1,0 +1,26 @@
+MRI examination of the right shoulder reveals marrow signal intensity be unremarkable without
+evidence of acute fracture or bony contusion. The acromioclavicular joint space is diminished
+and slightly edematous with bony hypertrophic changes at the superior and inferior aspects of the
+articular margins narrowing the subacromial arch. The glenohumeral joint space is narrowed
+with denuding of the articular cartilage. Bony hypertrophy is present at the medial aspect of the
+humeral articular surface.
+
+The supraspinatus tendon is attenuated with adjacent fluid and a focus of signal alteration at the
+musculotendinous junction. The inferior margin is ragged in appearance. There is an alteration of
+fluid and irregular margin at the distal aspect of the subscapularis tendon (Series #102, instance
+#13). The subscapular bursa is fluid-filled and greatly enlarged. Fluid signal is also identified
+within the subdeltoid/subacromial bursa. The sheath of the long head of the biceps tendon is
+greatly enlarged and fluid-filled, exceeding 21 mm in transverse diameter. The sheath is
+attenuated and its integrity is questionable, anteromedially (series #102, instance #18). The
+glenoid labrum appears intact, however if a glenolabral tear is clinically suspected, magnetic
+resonance arthrography is recommended for a more thorough evaluation. There is fluid signal
+within the glenohumeral joint cavity
+
+
+----------------------------------TEXT COMPLETE----------------------------------------
+
+
+The accuracy of this OCR reading is shown below:
+
+SequenceMatcher accuracy ratio (converted:original) = 0.9985683607730852
+Levenshtein accuracy ratio (converted:original) = 0.9985683607730852
