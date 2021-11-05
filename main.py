@@ -68,9 +68,9 @@ def add_to_file(file, body_text=0, processing_methods=0, accuracies=0):
         for method in processing_methods:
             file.write(method + '\n')
     if accuracies:
-        file.write("\nThe accuracy of this OCR reading is shown below:\n")
-        file.write("SequenceMatcher accuracy ratio (converted:original) = {}".format(accuracies[0]))
-        file.write("Levenshtein accuracy ratio (converted:original) = {}".format(accuracies[1]))
+        file.write("\nThe accuracy of this OCR reading is shown below:\n\n")
+        file.write("SequenceMatcher accuracy ratio (converted:original) = {}\n".format(accuracies[0]))
+        file.write("Levenshtein accuracy ratio (converted:original) = {}\n".format(accuracies[1]))
 
     if not body_text and not processing_methods and not accuracies:
         print("add_to_file function was called but not passed anything to add. /n")
@@ -88,7 +88,7 @@ def prep_image(file, noisify=False):
 
     if noisify:
         with Image.open(path) as img:
-            result = accuracy.noisify(img, rotation=5, brightness=0.5, contrast=0.5, sharpness=0.1)
+            result = accuracy.noisify(img, rotation=0, brightness=1, contrast=0.1, sharpness=1)
             # result.show()
 
     result = result.convert("RGB")

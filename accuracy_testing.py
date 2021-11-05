@@ -34,6 +34,8 @@ def noisify(image, rotation=0, brightness=1, contrast=1, sharpness=1):
         border = (50, 50, 50, 50) # top right bottom left
         new_img = ImageOps.expand(image, border=border, fill="white")
         new_img = new_img.rotate(rotation)
+    else:
+        new_img = image
 
 
     bright_enhancer = ImageEnhance.Brightness(new_img)
