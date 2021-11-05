@@ -10,6 +10,8 @@ __pycache__/
 converted_text/*
 converted_jpgs/*
 .DS_Store
+.idea/
+prepped_pics/*
 
 # Distribution / packaging
 .Python
