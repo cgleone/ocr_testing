@@ -3,6 +3,7 @@ import Levenshtein as lev
 from PIL import Image, ImageEnhance, ImageOps
 import numpy as np
 import os
+import cv2
 
 
 def get_accuracies(img_name, converted_text):
@@ -27,11 +28,28 @@ def levenshtein_similarity(converted, actual):
     return lev.ratio(converted, actual)
 
 
+def get_border(image, angle, format="pillow"):
+
+    angle = np.abs(angle)
+    if angle > 45 and angle <=90:
+        angle = 90-angle
+
+    angle_rad = np.deg2rad(angle)
+    if format == "pillow":
+        height = image.size[1]
+    elif format == "open_cv":
+        height = image.shape[0]
+
+    vertical = int(round((height/2) - (height/2)*np.cos(angle_rad), 0))
+    horizontal = int(round((height/2)*np.sin(angle_rad), 0))
+
+    return (vertical, horizontal, vertical, horizontal)
+
 def noisify(image, rotation=0, brightness=1, contrast=1, sharpness=1):
 
 
     if rotation:
-        border = (50, 50, 50, 50) # top right bottom left
+        border = get_border(image, rotation) # top right bottom left
         new_img = ImageOps.expand(image, border=border, fill="white")
         new_img = new_img.rotate(rotation)
     else:

@@ -15,7 +15,10 @@ def get_text(file):
     path = 'prepped_pics/' + file
 
     img = cv2.imread(path)
-    # img = pre.deskew_test(img) DO NOT USE THIS RIGHT NOW
+    img = pre.deskew(img)
+    cv2.imshow("image", img)
+    cv2.waitKey(0)
+
     #img = pre.rescale(img, 2, 2)
     #img = pre.canny(img)
     #img = pre.erode(img)
@@ -29,9 +32,6 @@ def get_text(file):
     accuracies = accuracy.get_accuracies(file, converted)
     add_to_file(txt_file, converted, pre.method_list, accuracies)
     print(accuracies)
-
-
-
 
 def convert_pdf(path):
     new_name = get_new_name(path)
@@ -89,7 +89,7 @@ def prep_image(file, noisify=False):
 
     if noisify:
         with Image.open(path) as img:
-            result = accuracy.noisify(img, rotation=0, brightness=1, contrast=1, sharpness=1)
+            result = accuracy.noisify(img, rotation=90, brightness=1, contrast=1, sharpness=1)
             # result.show()
 
     result = result.convert("RGB")

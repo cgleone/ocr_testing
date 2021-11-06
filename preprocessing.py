@@ -4,23 +4,20 @@ import cv2
 import pytesseract
 import re
 
+import accuracy_testing
+
 method_list = []
 
-def deskew_old(img):
+def get_text_rotation(img):
     osd = pytesseract.image_to_osd(img)
     angle = float(re.search('(?<=Rotate: )\d+', osd).group(0))
     print("angle: ", angle)
 
     method_list.append("Deskew from an original angle of {}".format(angle))
+    return angle
 
-    if angle:
-        img = imutils.rotate(img, angle=-angle)
-    return img
 
 def deskew_test(img):
-
-    cv2.imshow("image", img)
-    cv2.waitKey(0)
 
     gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     gray_img = cv2.bitwise_not(gray_img)
@@ -70,8 +67,6 @@ def rescale(img, xfactor, yfactor):
 # got this code from https://becominghuman.ai/how-to-automatically-deskew-straighten-a-text-image-using-opencv-a0c30aed83df
 def get_skew_angle(image) -> float:
     # Prep image, copy, convert to gray scale, blur, and threshold
-    cv2.imshow("image", image)
-    cv2.waitKey(0)
     new_image = image.copy()
     gray = cv2.cvtColor(new_image, cv2.COLOR_BGR2GRAY)
     blur = cv2.GaussianBlur(gray, (9, 9), 0)
@@ -86,19 +81,14 @@ def get_skew_angle(image) -> float:
     # Find all contours
     contours, hierarchy = cv2.findContours(dilate, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
     contours = sorted(contours, key = cv2.contourArea, reverse = True)
+    largestContour = contours[0]
+    minAreaRect = cv2.minAreaRect(largestContour)
 
-    # Find largest contour and surround in min area box
-
-    allContourAngles = [cv2.minAreaRect(c)[-1] for c in contours]
-    angle = sum(allContourAngles) / len(allContourAngles)
-
-    # Determine the angle. Convert it to the value that was originally used to obtain skewed image
-    # angle = minAreaRect[-1]
-    # if angle < -45:
-    #     angle = 90 + angle
-    # return -1.0 * angle
-
-    return angle
+    #Determine the angle. Convert it to the value that was originally used to obtain skewed image
+    angle = minAreaRect[-1]
+    if angle < -45:
+        angle = 90 + angle
+    return -1.0 * angle
 
 
 def rotate_image(image, angle: float):
@@ -112,6 +102,20 @@ def rotate_image(image, angle: float):
 
 
 def deskew(image):
-    angle = get_skew_angle(image)
-    print(angle)
-    return rotate_image(image, -1.0 * angle)
+    angle_from_axis = get_skew_angle(image)
+    axis_aligned_img = rotate(image, angle_from_axis)
+
+    angle_by_text = get_text_rotation(axis_aligned_img)
+    fully_aligned_img = rotate(axis_aligned_img, angle_by_text)
+
+    return fully_aligned_img
+
+
+def rotate(img, angle):
+    if angle:
+        #widths = accuracy_testing.get_border(img, angle, format="open_cv")
+        # if widths[0]:
+        #     img = cv2.copyMakeBorder(img, widths[0], widths[1], widths[0], widths[1], cv2.BORDER_CONSTANT, value=[255, 255, 255])
+        img = imutils.rotate(img, angle=-angle)
+    return img
+
