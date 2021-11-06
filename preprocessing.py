@@ -99,3 +99,8 @@ def rotate(img, angle):
         img = imutils.rotate(img, angle=-angle)
     return img
 
+def greyscale(img):
+    return cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+def thresholding(img):
+    return cv2.threshold(img, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]

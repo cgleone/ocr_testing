@@ -16,6 +16,8 @@ def get_text(file):
 
     img = cv2.imread(path)
     img = pre.deskew(img)
+    img = pre.greyscale(img)
+    img = pre.thresholding(img)
     cv2.imshow("image", img)
     cv2.waitKey(0)
 
@@ -50,7 +52,7 @@ def create_output_file(img_name):
     now = datetime.now()
 
     # dd/mm/YY H:M:S
-    dt = now.strftime("_%d_%m_%Y_%H:%M:%S")
+    dt = now.strftime("_%d_%m_%Y_%H-%M-%S")
     file = open('conversion_reports/' + txt_name + dt + '.txt', "w+")
     return file
 
@@ -102,7 +104,8 @@ def prep_image(file, noisify=False):
 
 if __name__ == '__main__':
 
-    file = 'report_body_1.jpg'
+
+    file = 'report_body_1_periodic.jpg'
     new_file = prep_image(file, noisify=True)
 
     start_time = time.time()
