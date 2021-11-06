@@ -24,7 +24,6 @@ def get_text(file):
     #img = pre.erode(img)
     #img = pre.dilate(img)
 
-
     converted = pytesseract.image_to_string(img)
     print("Text found in '{}'\n".format(file))
     print(converted)
@@ -89,7 +88,7 @@ def prep_image(file, noisify=False):
 
     if noisify:
         with Image.open(path) as img:
-            result = accuracy.noisify(img, rotation=0, brightness=1, contrast=1, sharpness=1)
+            result = accuracy.noisify(img, rotation=-5, brightness=1, contrast=1, sharpness=1)
             # result.show()
 
     result = result.convert("RGB")
@@ -103,7 +102,7 @@ def prep_image(file, noisify=False):
 
 if __name__ == '__main__':
 
-    file = 'report_body_2.pdf'
+    file = 'report_body_1.jpg'
     new_file = prep_image(file, noisify=True)
 
     start_time = time.time()
