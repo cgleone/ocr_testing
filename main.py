@@ -89,7 +89,7 @@ def prep_image(file, noisify=False):
 
     if noisify:
         with Image.open(path) as img:
-            result = accuracy.noisify(img, rotation=90, brightness=1, contrast=1, sharpness=1)
+            result = accuracy.noisify(img, rotation=0, brightness=1, contrast=1, sharpness=1)
             # result.show()
 
     result = result.convert("RGB")

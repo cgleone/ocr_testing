@@ -66,7 +66,6 @@ def noisify(image, rotation=0, brightness=1, contrast=1, sharpness=1):
     new_img = sharp_enhancer.enhance(sharpness)
 
 
-
     return new_img
 
 

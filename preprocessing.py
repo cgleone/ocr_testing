@@ -16,29 +16,6 @@ def get_text_rotation(img):
     method_list.append("Deskew from an original angle of {}".format(angle))
     return angle
 
-
-def deskew_test(img):
-
-    gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    gray_img = cv2.bitwise_not(gray_img)
-    coordinates = np.column_stack(np.where(gray_img > 0))
-    ang = cv2.minAreaRect(coordinates)[-1]
-    print(ang)
-    if ang < -45:
-        angle = -(90 + ang)
-    else:
-        angle = -ang
-
-    print("angle: ", angle)
-    method_list.append("Deskew from an original angle of {}".format(angle))
-
-    if angle:
-        img = imutils.rotate(img, angle=-angle)
-    return img
-
-
-
-
 # dilation
 def dilate(image):
     kernel = np.ones((5, 5), np.uint8)
@@ -103,7 +80,10 @@ def rotate_image(image, angle: float):
 
 def deskew(image):
     angle_from_axis = get_skew_angle(image)
-    axis_aligned_img = rotate(image, angle_from_axis)
+    if abs(angle_from_axis/90) == 1:
+        axis_aligned_img = image
+    else:
+        axis_aligned_img = rotate(image, angle_from_axis)
 
     angle_by_text = get_text_rotation(axis_aligned_img)
     fully_aligned_img = rotate(axis_aligned_img, angle_by_text)
