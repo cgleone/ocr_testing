@@ -99,3 +99,5 @@ def rotate(img, angle):
         img = imutils.rotate(img, angle=-angle)
     return img
 
+def greyscale(img):
+    return cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
