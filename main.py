@@ -17,6 +17,7 @@ def get_text(file):
     img = cv2.imread(path)
     img = pre.deskew(img)
     img = pre.greyscale(img)
+    img = pre.thresholding(img)
     cv2.imshow("image", img)
     cv2.waitKey(0)
 
@@ -104,7 +105,7 @@ def prep_image(file, noisify=False):
 
 if __name__ == '__main__':
 
-    file = 'report_body_2.pdf'
+    file = 'report_body_1_periodic.jpg'
     new_file = prep_image(file, noisify=True)
 
     start_time = time.time()
