@@ -100,7 +100,25 @@ def rotate(img, angle):
     return img
 
 def greyscale(img):
+    method_list.append("Greyscale")
     return cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
 def thresholding(img):
+    method_list.append("Thresholding")
     return cv2.threshold(img, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
+
+def gaussian_blur(img):
+    method_list.append("Gaussian Blur")
+    return cv2.GaussianBlur(img, (5, 5), 0)
+
+def median_blur(img):
+    method_list.append("Median Blur")
+    return cv2.medianBlur(img, 5)
+
+def averaging_blur(img):
+    method_list.append("Averaging Blur")
+    return cv2.blur(img, (3, 3))
+
+def bilateral_Filter(img):
+    method_list.append("Averaging Blur")
+    return cv2.bilateralFilter(img, 9, 75, 75)

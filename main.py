@@ -18,10 +18,15 @@ def get_text(file):
     img = pre.deskew(img)
     img = pre.greyscale(img)
     img = pre.thresholding(img)
+    img = pre.gaussian_blur(img)
+
     cv2.imshow("image", img)
     cv2.waitKey(0)
 
     #img = pre.rescale(img, 2, 2)
+    #img = pre.median_blur(img)
+    #img = pre.averaging_blur(img)
+    #img = pre.thresholding(img)
     #img = pre.canny(img)
     #img = pre.erode(img)
     #img = pre.dilate(img)
@@ -105,7 +110,7 @@ def prep_image(file, noisify=False):
 if __name__ == '__main__':
 
 
-    file = 'report_body_1_periodic.jpg'
+    file = 'report_body_1.jpg'
     new_file = prep_image(file, noisify=True)
 
     start_time = time.time()
