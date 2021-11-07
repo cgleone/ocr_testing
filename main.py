@@ -15,14 +15,14 @@ def get_text(file):
     path = 'prepped_pics/' + file
 
     img = cv2.imread(path)
-    img = pre.deskew(img)
-    img = pre.greyscale(img)
-    img = pre.thresholding(img)
-    cv2.imshow("image", img)
-    cv2.waitKey(0)
+   # img = pre.deskew(img)
+    # img = pre.greyscale(img)
+#    img = pre.thresholding(img)
+    # cv2.imshow("image", img)
+    # cv2.waitKey(0)
 
     #img = pre.rescale(img, 2, 2)
-    #img = pre.canny(img)
+    img = pre.canny(img)
     #img = pre.erode(img)
     #img = pre.dilate(img)
 
@@ -67,6 +67,9 @@ def add_to_file(file, body_text=0, processing_methods=0, accuracies=0):
         file.write("The pre-processing methods used in this OCR text conversion were:\n")
         for method in processing_methods:
             file.write(method + '\n')
+    else:
+        file.write("No pre-processing methods were used to produce this output.\n")
+
     if accuracies:
         file.write("\nThe accuracy of this OCR reading is shown below:\n\n")
         file.write("SequenceMatcher accuracy ratio (converted:original) = {}\n".format(accuracies[0]))
@@ -90,8 +93,10 @@ def prep_image(file, noisify=False):
 
     if noisify:
         with Image.open(path) as img:
-            result = accuracy.noisify(img, rotation=-5, brightness=1, contrast=1, sharpness=1)
+            result = accuracy.noisify(img, rotation=10, brightness=1, contrast=1, sharpness=1)
             # result.show()
+    else:
+        result = Image.open(path)
 
     result = result.convert("RGB")
     result.save('prepped_pics/' +new_name)
@@ -105,8 +110,8 @@ def prep_image(file, noisify=False):
 if __name__ == '__main__':
 
 
-    file = 'report_body_1_periodic.jpg'
-    new_file = prep_image(file, noisify=True)
+    file = '12486 3 anon.pdf'
+    new_file = prep_image(file, noisify=False)
 
     start_time = time.time()
 

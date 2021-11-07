@@ -47,7 +47,6 @@ def get_border(image, angle, format="pillow"):
 
 def noisify(image, rotation=0, brightness=1, contrast=1, sharpness=1):
 
-
     if rotation:
         border = get_border(image, rotation) # top right bottom left
         new_img = ImageOps.expand(image, border=border, fill="white")
@@ -64,7 +63,6 @@ def noisify(image, rotation=0, brightness=1, contrast=1, sharpness=1):
 
     sharp_enhancer = ImageEnhance.Sharpness(new_img)
     new_img = sharp_enhancer.enhance(sharpness)
-
 
     return new_img
 
