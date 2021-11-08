@@ -8,38 +8,75 @@ import accuracy_testing
 
 method_list = []
 
-def get_text_rotation(img):
-    osd = pytesseract.image_to_osd(img)
-    angle = float(re.search('(?<=Rotate: )\d+', osd).group(0))
-    print("angle: ", angle)
+# ------------------------ preprocessing methods ---------------------------------
 
-    method_list.append("Deskew from an original angle of {}".format(angle))
-    return angle
+def deskew(image):
+    angle_from_axis = get_skew_angle(image)
+    if abs(angle_from_axis/90) == 1:
+        axis_aligned_img = image
+    else:
+        axis_aligned_img = rotate(image, angle_from_axis)
 
-# dilation
+    angle_by_text = get_text_rotation(axis_aligned_img)
+    fully_aligned_img = rotate(axis_aligned_img, angle_by_text)
+
+    return fully_aligned_img
+
+
 def dilate(image):
     kernel = np.ones((5, 5), np.uint8)
     method_list.append("Dilation")
     return cv2.dilate(image, kernel, iterations=1)
 
 
-# erosion
 def erode(image):
     kernel = np.ones((5, 5), np.uint8)
     method_list.append("Erosion")
     return cv2.erode(image, kernel, iterations=1)
 
-#canny edge detection
+
+def greyscale(img):
+    method_list.append("Greyscale")
+    return cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+
+def thresholding(img):
+    method_list.append("Thresholding")
+    return cv2.threshold(img, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
+
+
+def gaussian_blur(img, kernel):
+    method_list.append("Gaussian Blur with a {}x{} kernel".format(kernel, kernel))
+    return cv2.GaussianBlur(img, (kernel, kernel), 0)
+
+
+def median_blur(img, kernel):
+    method_list.append("Median Blur")
+    return cv2.medianBlur(img, kernel)
+
+
+def averaging_blur(img, kernel):
+    method_list.append("Averaging Blur")
+    return cv2.blur(img, (kernel, kernel))
+
+
+def bilateral_Filter(img):
+    method_list.append("Averaging Blur")
+    return cv2.bilateralFilter(img, 9, 75, 75)
+
+
 def canny(image):
     method_list.append("Canny")
     return cv2.Canny(image, 100, 200)
 
-#rescaling
+
 def rescale(img, xfactor, yfactor):
     new_img = cv2.resize(img, None, fx=xfactor, fy=yfactor, interpolation=cv2.INTER_CUBIC)
     method_list.append("Rescaling  by fx={} and fy={}".format(xfactor, yfactor))
     return new_img
 
+
+# --------------------- methods called by preprocessing methods ---------------------------------------
 
 # got this code from https://becominghuman.ai/how-to-automatically-deskew-straighten-a-text-image-using-opencv-a0c30aed83df
 def get_skew_angle(image) -> float:
@@ -68,29 +105,6 @@ def get_skew_angle(image) -> float:
     return -1.0 * angle
 
 
-def rotate_image(image, angle: float):
-    new_image = image.copy()
-    (h, w) = new_image.shape[:2]
-    center = (w // 2, h // 2)
-    M = cv2.getRotationMatrix2D(center, angle, 1.0)
-    new_image = cv2.warpAffine(new_image, M, (w, h), flags=cv2.INTER_CUBIC, borderMode=cv2.BORDER_REPLICATE)
-
-    return new_image
-
-
-def deskew(image):
-    angle_from_axis = get_skew_angle(image)
-    if abs(angle_from_axis/90) == 1:
-        axis_aligned_img = image
-    else:
-        axis_aligned_img = rotate(image, angle_from_axis)
-
-    angle_by_text = get_text_rotation(axis_aligned_img)
-    fully_aligned_img = rotate(axis_aligned_img, angle_by_text)
-
-    return fully_aligned_img
-
-
 def rotate(img, angle):
     if angle:
         #widths = accuracy_testing.get_border(img, angle, format="open_cv")
@@ -99,27 +113,11 @@ def rotate(img, angle):
         img = imutils.rotate(img, angle=-angle)
     return img
 
-def greyscale(img):
-    method_list.append("Greyscale")
-    return cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
-def thresholding(img):
-    method_list.append("Thresholding")
-    return cv2.threshold(img, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
+def get_text_rotation(img):
+    osd = pytesseract.image_to_osd(img)
+    angle = float(re.search('(?<=Rotate: )\d+', osd).group(0))
+    print("angle: ", angle)
 
-def gaussian_blur(img, kernel):
-    method_list.append("Gaussian Blur with a {}x{} kernel".format(kernel, kernel))
-    return cv2.GaussianBlur(img, (kernel, kernel), 0)
-
-def median_blur(img, kernel):
-    method_list.append("Median Blur")
-    return cv2.medianBlur(img, kernel)
-
-def averaging_blur(img, kernel):
-    method_list.append("Averaging Blur")
-    return cv2.blur(img, (kernel, kernel))
-
-def bilateral_Filter(img):
-    method_list.append("Averaging Blur")
-    return cv2.bilateralFilter(img, 9, 75, 75)
-
+    method_list.append("Deskew from an original angle of {}".format(angle))
+    return angle

@@ -30,17 +30,8 @@ def get_text(file, kernel, factor):
 
     #img = pre.median_blur(img)
     #img = pre.averaging_blur(img)
-    #img = pre.thresholding(img)
+
     #img = pre.canny(img)
-
-   # img = pre.deskew(img)
-    # img = pre.greyscale(img)
-#    img = pre.thresholding(img)
-    # cv2.imshow("image", img)
-    # cv2.waitKey(0)
-
-    #img = pre.rescale(img, 2, 2)
-   # img = pre.canny(img)
     #img = pre.erode(img)
     #img = pre.dilate(img)
 
