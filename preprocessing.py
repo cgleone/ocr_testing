@@ -107,18 +107,19 @@ def thresholding(img):
     method_list.append("Thresholding")
     return cv2.threshold(img, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
 
-def gaussian_blur(img):
-    method_list.append("Gaussian Blur")
-    return cv2.GaussianBlur(img, (5, 5), 0)
+def gaussian_blur(img, kernel):
+    method_list.append("Gaussian Blur with a {}x{} kernel".format(kernel, kernel))
+    return cv2.GaussianBlur(img, (kernel, kernel), 0)
 
-def median_blur(img):
+def median_blur(img, kernel):
     method_list.append("Median Blur")
-    return cv2.medianBlur(img, 5)
+    return cv2.medianBlur(img, kernel)
 
-def averaging_blur(img):
+def averaging_blur(img, kernel):
     method_list.append("Averaging Blur")
-    return cv2.blur(img, (3, 3))
+    return cv2.blur(img, (kernel, kernel))
 
 def bilateral_Filter(img):
     method_list.append("Averaging Blur")
     return cv2.bilateralFilter(img, 9, 75, 75)
+

@@ -9,22 +9,25 @@ from datetime import datetime
 import accuracy_testing as accuracy
 from PIL import Image
 
-def get_text(file):
+def get_text(file, kernel, factor):
 
     txt_file = create_output_file(file)
     path = 'prepped_pics/' + file
 
     img = cv2.imread(path)
 
-    img = pre.deskew(img)
-    img = pre.greyscale(img)
-    img = pre.thresholding(img)
-    img = pre.gaussian_blur(img)
+    #img = pre.deskew(img)
+    #img = pre.greyscale(img)
+    #img = pre.thresholding(img)
 
-    cv2.imshow("image", img)
-    cv2.waitKey(0)
 
-    #img = pre.rescale(img, 2, 2)
+
+    #cv2.imshow("image", img)
+    #cv2.waitKey(0)
+
+    img = pre.gaussian_blur(img, kernel)
+    img = pre.rescale(img, factor, factor)
+
     #img = pre.median_blur(img)
     #img = pre.averaging_blur(img)
     #img = pre.thresholding(img)
@@ -37,7 +40,7 @@ def get_text(file):
     # cv2.waitKey(0)
 
     #img = pre.rescale(img, 2, 2)
-    img = pre.canny(img)
+   # img = pre.canny(img)
     #img = pre.erode(img)
     #img = pre.dilate(img)
 
@@ -48,6 +51,8 @@ def get_text(file):
     accuracies = accuracy.get_accuracies(file, converted)
     add_to_file(txt_file, converted, pre.method_list, accuracies)
     print(accuracies)
+
+    return accuracies
 
 def convert_pdf(path):
     new_name = get_new_name(path)
@@ -124,15 +129,15 @@ def prep_image(file, noisify=False):
 
 if __name__ == '__main__':
 
-
-
-    file = 'report_body_1.jpg'
-    new_file = prep_image(file, noisify=True)
+    file = '12486 4 anon.pdf'
+    new_file = prep_image(file, noisify=False)
 
 
     start_time = time.time()
 
-    get_text(new_file)
+    #get_text(new_file, (5, 5))
+
+    accuracy.compare_kernels(new_file)
 
     executionTime = (time.time() - start_time)
     print("Execution Time: {} seconds".format(round(executionTime, 2)))
