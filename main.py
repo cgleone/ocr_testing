@@ -9,24 +9,19 @@ from datetime import datetime
 import accuracy_testing as accuracy
 from PIL import Image
 
-def get_text(file, kernel, factor):
+def get_text(file, test_value_dict):
 
     txt_file = create_output_file(file)
     path = 'prepped_pics/' + file
 
     img = cv2.imread(path)
 
-    #img = pre.deskew(img)
-    #img = pre.greyscale(img)
+  #  img = pre.deskew(img)
+   # img = pre.greyscale(img)
     #img = pre.thresholding(img)
 
-
-
-    #cv2.imshow("image", img)
-    #cv2.waitKey(0)
-
-    img = pre.gaussian_blur(img, kernel)
-    img = pre.rescale(img, factor, factor)
+    img = pre.rescale(img, test_value_dict.get_value('rescale'))
+    img = pre.gaussian_blur(img, test_value_dict.get_value('gaussian'))
 
     #img = pre.median_blur(img)
     #img = pre.averaging_blur(img)

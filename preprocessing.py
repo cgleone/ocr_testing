@@ -70,9 +70,17 @@ def canny(image):
     return cv2.Canny(image, 100, 200)
 
 
-def rescale(img, xfactor, yfactor):
-    new_img = cv2.resize(img, None, fx=xfactor, fy=yfactor, interpolation=cv2.INTER_CUBIC)
-    method_list.append("Rescaling  by fx={} and fy={}".format(xfactor, yfactor))
+def rescale(img, factor):
+    new_img = cv2.resize(img, None, fx=factor, fy=factor, interpolation=cv2.INTER_CUBIC)
+    method_list.append("Rescaling  by fx={} and fy={}".format(factor, factor))
+    return new_img
+
+
+def sharpen(img):
+    kernel = np.array([[0, -1, 0],
+                       [-1, 5, -1],
+                       [0, -1, 0]])
+    new_img = cv2.filter2D(src=img, ddepth=-1, kernel=kernel)
     return new_img
 
 
