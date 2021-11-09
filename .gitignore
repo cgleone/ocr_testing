@@ -12,6 +12,7 @@ converted_jpgs/*
 .DS_Store
 .idea/
 prepped_pics/*
+pics_for_pillowing/*
 
 # Distribution / packaging
 .Python

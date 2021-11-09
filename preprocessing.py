@@ -5,6 +5,7 @@ import pytesseract
 import re
 
 import accuracy_testing
+from PIL import Image, ImageEnhance
 
 method_list = []
 
@@ -12,7 +13,7 @@ method_list = []
 
 def deskew(image):
     angle_from_axis = get_skew_angle(image)
-    if abs(angle_from_axis/90) == 1:
+    if abs(angle_from_axis/90) == 1 or abs(angle_from_axis) < 1:
         axis_aligned_img = image
     else:
         axis_aligned_img = rotate(image, angle_from_axis)
@@ -23,14 +24,14 @@ def deskew(image):
     return fully_aligned_img
 
 
-def dilate(image):
-    kernel = np.ones((5, 5), np.uint8)
+def dilate(image, kernel_size):
+    kernel = np.ones((kernel_size, kernel_size), np.uint8)
     method_list.append("Dilation")
     return cv2.dilate(image, kernel, iterations=1)
 
 
-def erode(image):
-    kernel = np.ones((5, 5), np.uint8)
+def erode(image, kernel_size):
+    kernel = np.ones((kernel_size, kernel_size), np.uint8)
     method_list.append("Erosion")
     return cv2.erode(image, kernel, iterations=1)
 
@@ -76,12 +77,39 @@ def rescale(img, factor):
     return new_img
 
 
-def sharpen(img):
-    kernel = np.array([[0, -1, 0],
-                       [-1, 5, -1],
-                       [0, -1, 0]])
-    new_img = cv2.filter2D(src=img, ddepth=-1, kernel=kernel)
+def closing(img, kernel):
+    img = dilate(img, kernel)
+    img = erode(img, kernel)
+    return img
+
+
+def sharpen(pil_img, factor):
+    sharp_enhancer = ImageEnhance.Sharpness(pil_img)
+    new_img = sharp_enhancer.enhance(factor)
     return new_img
+
+
+
+def brighten(pil_img, factor):
+    bright_enhancer = ImageEnhance.Brightness(pil_img)
+    new_img = bright_enhancer.enhance(factor)
+    return new_img
+
+
+
+def contrast(pil_img, factor):
+    contrast_enhancer = ImageEnhance.Contrast(pil_img)
+    new_img = contrast_enhancer.enhance(factor)
+    return new_img
+
+
+
+# def sharpen(img):
+#     kernel = np.array([[0, -1, 0],
+#                        [-1, 5, -1],
+#                        [0, -1, 0]])
+#     new_img = cv2.filter2D(src=img, ddepth=-1, kernel=kernel)
+#     return new_img
 
 
 # --------------------- methods called by preprocessing methods ---------------------------------------

@@ -16,19 +16,34 @@ def get_text(file, test_value_dict):
 
     img = cv2.imread(path)
 
-  #  img = pre.deskew(img)
-   # img = pre.greyscale(img)
-    #img = pre.thresholding(img)
-
+    img = pre.deskew(img) # always leave on
+    img = pre.greyscale(img) # always leave on
     img = pre.rescale(img, test_value_dict.get_value('rescale'))
+
+    # NOW MAKE IT A PILLOW
+
+    pillow_path = save_for_pillowing(img, file)
+    pil_img = get_pil_img(pillow_path)
+
+    pil_img = pre.sharpen(pil_img, test_value_dict.get_value('sharpen'))
+    pil_img = pre.brighten(pil_img, test_value_dict.get_value('brighten'))
+    pil_img = pre.contrast(pil_img, test_value_dict.get_value('contrast'))
+
+    # BACK TO OPENCV NOW
+    img = np.array(pil_img)  # alrighty done it's a opencv now
+
+    img = pre.thresholding(img) # always leave on
+
+   # img = pre.closing(img, test_value_dict.get_value('closing'))
     img = pre.gaussian_blur(img, test_value_dict.get_value('gaussian'))
 
-    #img = pre.median_blur(img)
-    #img = pre.averaging_blur(img)
+    #img = pre.median_blur(img, test_value_dict.get_value('median'))
+    #img = pre.averaging_blur(img, test_value_dict.get_value('averaging'))
 
     #img = pre.canny(img)
     #img = pre.erode(img)
     #img = pre.dilate(img)
+
 
     converted = pytesseract.image_to_string(img)
     print("Text found in '{}'\n".format(file))
@@ -44,6 +59,16 @@ def convert_pdf(path):
     new_name = get_new_name(path)
     image = convert_from_path(path, paths_only=True, output_folder='converted_jpgs', fmt='jpeg', output_file=new_name)
     return image[0]
+
+
+def save_for_pillowing(img, filename):
+    path = 'pics_for_pillowing/' + filename
+    cv2.imwrite(path, img)
+    return path
+
+
+def get_pil_img(path):
+    return Image.open(path)
 
 
 def get_new_name(path):
@@ -124,6 +149,7 @@ if __name__ == '__main__':
     #get_text(new_file, (5, 5))
 
     accuracy.compare_kernels(new_file)
+    #accuracy.optimize_single_method(new_file)
 
     executionTime = (time.time() - start_time)
     print("Execution Time: {} seconds".format(round(executionTime, 2)))
