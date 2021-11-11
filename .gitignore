@@ -13,6 +13,9 @@ converted_jpgs/*
 .idea/
 prepped_pics/*
 pics_for_pillowing/*
+temporary/*
+temporary_acc_total.py
+test.txt
 
 # Distribution / packaging
 .Python

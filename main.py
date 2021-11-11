@@ -16,18 +16,28 @@ def get_text(file, test_value_dict):
 
     img = cv2.imread(path)
 
+    # cv2.imshow('image', img)
+    # cv2.waitKey(0)
+
     img = pre.deskew(img) # always leave on
+
+
     img = pre.greyscale(img) # always leave on
-    img = pre.rescale(img, test_value_dict.get_value('rescale'))
+    # img = pre.rescale(img, test_value_dict.get_value('rescale'))
+     # img = pre.rescale(img, 2)
 
     # NOW MAKE IT A PILLOW
 
     pillow_path = save_for_pillowing(img, file)
     pil_img = get_pil_img(pillow_path)
+    #
+    # pil_img = pre.sharpen(pil_img, test_value_dict.get_value('sharpen'))
+    # pil_img = pre.brighten(pil_img, test_value_dict.get_value('brighten'))
+    # pil_img = pre.contrast(pil_img, test_value_dict.get_value('contrast'))
 
-    pil_img = pre.sharpen(pil_img, test_value_dict.get_value('sharpen'))
-    pil_img = pre.brighten(pil_img, test_value_dict.get_value('brighten'))
-    pil_img = pre.contrast(pil_img, test_value_dict.get_value('contrast'))
+    # pil_img = pre.sharpen(pil_img, 3)
+    # pil_img = pre.brighten(pil_img, 1.5)
+    # pil_img = pre.contrast(pil_img, 3)
 
     # BACK TO OPENCV NOW
     img = np.array(pil_img)  # alrighty done it's a opencv now
@@ -124,7 +134,7 @@ def prep_image(file, noisify=False):
 
     if noisify:
         with Image.open(path) as img:
-            result = accuracy.noisify(img, rotation=10, brightness=1, contrast=1, sharpness=1)
+            result = accuracy.noisify(img, rotation=78, brightness=1, contrast=1, sharpness=1)
             # result.show()
     else:
         result = Image.open(path)
@@ -140,15 +150,15 @@ def prep_image(file, noisify=False):
 
 if __name__ == '__main__':
 
-    file = '12486 4 anon.pdf'
-    new_file = prep_image(file, noisify=False)
+    file = 'Turnbull_2.pdf'
+    new_file = prep_image(file, noisify=True)
 
 
     start_time = time.time()
 
-    #get_text(new_file, (5, 5))
+    get_text(new_file, accuracy.TestValueDict())
 
-    accuracy.compare_kernels(new_file)
+    #accuracy.compare_kernels(new_file)
     #accuracy.optimize_single_method(new_file)
 
     executionTime = (time.time() - start_time)
