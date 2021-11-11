@@ -134,7 +134,7 @@ def prep_image(file, noisify=False):
 
     if noisify:
         with Image.open(path) as img:
-            result = accuracy.noisify(img, rotation=78, brightness=1, contrast=1, sharpness=1)
+            result = accuracy.noisify(img, rotation=76, brightness=1, contrast=1, sharpness=1)
             # result.show()
     else:
         result = Image.open(path)
@@ -150,8 +150,8 @@ def prep_image(file, noisify=False):
 
 if __name__ == '__main__':
 
-    file = 'Turnbull_2.pdf'
-    new_file = prep_image(file, noisify=True)
+    file = '12486 3 anon.pdf'
+    new_file = prep_image(file, noisify=False)
 
 
     start_time = time.time()

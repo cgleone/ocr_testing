@@ -35,15 +35,18 @@ def deskew(image):
     img_for_contours = image.copy()
     skew_angle_list = []
     angle_from_axis, skew_angle_list = get_skew_angle(img_for_contours, skew_angle_list)
-    new_image, skew_angle_list = recursive_deskew(img_for_contours, angle_from_axis, skew_angle_list)
+    if angle_from_axis != 0:
+        new_image, skew_angle_list = recursive_deskew(img_for_contours, angle_from_axis, skew_angle_list)
+        axis_aligned_img = rotate(image, sum(skew_angle_list))
+    else:
+        axis_aligned_img = image
 
-    axis_aligned_img = rotate(image, sum(skew_angle_list))
     angle_by_text = get_text_rotation(axis_aligned_img)
     fully_aligned_img = rotate(axis_aligned_img, angle_by_text)
 
-    cv2.imshow('fully aligned image', fully_aligned_img)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
+    # cv2.imshow('fully aligned image', fully_aligned_img)
+    # cv2.waitKey(0)
+    # cv2.destroyAllWindows()
 
     method_list.append("Deskewed from an angle of {}".format(sum(skew_angle_list)))
 
@@ -221,12 +224,14 @@ def get_skew_angle(image, deskew_angles):
         if rounded_important_angles.count(angle) > 1:
             if modes.count(angle) == 0:
                 modes.append(angle)
-        elif rounded_important_angles.count(angle+1)>0:
+
+    if len(modes) == 0:
+        if rounded_important_angles.count(angle+1)>0:
             if modes.count(angle) == 0 and modes.count(angle+1) == 0:
-                modes.append(angle)
+                modes.append(angle+1)
         elif rounded_important_angles.count(angle - 1) > 0:
             if modes.count(angle) == 0 and modes.count(angle - 1) == 0:
-                modes.append(angle)
+                modes.append(angle-1)
 
     print("Rounded important angles: {}".format(rounded_important_angles))
     if len(modes) == 0:
@@ -274,9 +279,9 @@ def rotate(img, angle):
         image_center = tuple(np.array(img.shape[1::-1]) / 2)
         rot_mat = cv2.getRotationMatrix2D(image_center, -angle, 1.0)
         img = cv2.warpAffine(img, rot_mat, img.shape[1::-1], flags=cv2.INTER_LINEAR, borderValue=(255,255,255))
-        cv2.imshow('rotate result', img)
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
+        # cv2.imshow('rotate result', img)
+        # cv2.waitKey(0)
+        # cv2.destroyAllWindows()
     return img
 
 
