@@ -4,10 +4,13 @@ from PIL import Image, ImageEnhance, ImageOps
 import numpy as np
 import os
 import cv2
+from datetime import datetime
 
 import preprocessing
 from main import get_text
 from matplotlib import pyplot as plt
+# from temporary_acc_total import update_file, file_date_key
+import sys
 
 
 def get_accuracies(img_name, converted_text):
@@ -44,17 +47,17 @@ def get_border(image, angle, format="pillow"):
     elif format == "open_cv":
         height = image.shape[0]
 
-    vertical = int(round((height/2) - (height/2)*np.cos(angle_rad), 0))
-    horizontal = int(round((height/2)*np.sin(angle_rad), 0))
+    vertical = int(round((height/2) - (height/2)*np.cos(angle_rad), 0)) + 20
+    horizontal = int(round((height/2)*np.sin(angle_rad), 0)) + 20
 
-    return (vertical, horizontal, vertical, horizontal)
+    return (horizontal, vertical, horizontal, vertical)
 
 def noisify(image, rotation=0, brightness=1, contrast=1, sharpness=1):
 
     if rotation:
-        border = get_border(image, rotation) # top right bottom left
-        new_img = ImageOps.expand(image, border=(200, 200, 200, 200), fill="white")
-        new_img = new_img.rotate(rotation)
+        border = get_border(image, rotation) # left top right bottom
+        new_img = ImageOps.expand(image, border=border, fill="white")
+        new_img = new_img.rotate(rotation, fillcolor='white')
     else:
         new_img = image
 
@@ -79,17 +82,34 @@ def compare_kernels(file):
     seq_accuracies = []
     best_seq_vals = [0, 0, 0, 0, 0]
     best_lev_vals = [0, 0, 0, 0, 0]
+    best_combined_vals = [0, 0, 0, 0, 0]
 
     seq_for_max_seq = 0
     lev_for_max_seq = 0
     seq_for_max_lev = 0
     lev_for_max_lev = 0
+    seq_for_max_combined = 0
+    lev_for_max_combined = 0
+    best_combined_accs = 0
+
+    count = 1
+    #
+    # files = os.listdir("temporary")
+    # files = sorted(files, key=file_date_key)
 
     for rescale_val in value_dict.get_value_list('rescale'):
         for gaus_val in value_dict.get_value_list('gaussian'):
             for bright_val in value_dict.get_value_list('brighten'):
                 for cont_val in value_dict.get_value_list('contrast'):
                     for sharp_val in value_dict.get_value_list('sharpen'):
+
+                        print("\nI'm on iteration number {}\n".format(count))
+                        # update_file("temporary/" + files[count-1], "sharp val: " + str(sharp_val))
+                        # update_file("temporary/" + files[count-1], "contrast val: " + str(cont_val))
+                        # update_file("temporary/" + files[count-1], "brightness val: " + str(bright_val))
+                        #
+                        count = count + 1
+
 
                         seq, lev = get_text(file, value_dict)
                         lev_accuracies.append(lev * 100)
@@ -104,6 +124,14 @@ def compare_kernels(file):
                             lev_for_max_lev = lev
                             seq_for_max_lev = seq
                             best_lev_vals = [sharp_val, cont_val, bright_val, gaus_val, rescale_val]
+
+                        combined_accs = seq + lev
+                        if combined_accs > best_combined_accs:
+                            seq_for_max_combined = seq
+                            lev_for_max_combined = lev
+                            best_combined_accs = combined_accs
+                            best_combined_vals = [sharp_val, cont_val, bright_val, gaus_val, rescale_val]
+                        combined_accs = 0
 
                         value_dict.inc_location_in_list('sharpen')
 
@@ -144,7 +172,24 @@ def compare_kernels(file):
 
     print("\n\n----------------------------------------------------------------\n\n")
 
-    #plot_modelling(options, seq_accuracies, lev_accuracies)
+    print("Best combined accuracy was ".format(best_combined_accs*100))
+    print("Corresponting lev accuracy was {}".format(lev_for_max_combined*100))
+    print("Corresponting seq accuracy was {}".format(seq_for_max_combined*100))
+    print("The values that provided this maximum were: ")
+    print("Sharpen Factor {}".format(best_combined_vals[0]))
+    print("Contrast Factor {}".format(best_combined_vals[1]))
+    print("Brighten Factor {}".format(best_combined_vals[2]))
+    print("Gaussian Kernel {}".format(best_combined_vals[3]))
+    print("Rescale Factor {}".format(best_combined_vals[4]))
+
+    print("\n\n----------------------------------------------------------------\n\n")
+
+    write_results_file(value_dict.value_dict, file,
+                       seq_for_max_seq, lev_for_max_seq, best_seq_vals,
+                       lev_for_max_lev, seq_for_max_lev, best_lev_vals,
+                       best_combined_accs, lev_for_max_combined, seq_for_max_combined, best_combined_vals)
+
+
 
 def two_methods(file):
     value_dict = TestValueDict()
@@ -206,8 +251,8 @@ def plot_modelling(kernels, seq, lev):
     plt.plot(kernels, seq, label='SequenceMatcher Accuracy')
     plt.plot(kernels, lev, label='Levenshtein Accuracy')
     plt.ylabel("Accuracy (%)")
-    plt.xlabel("Rescale Factor ")
-    plt.title("Comparing Rescaling Factor for Preprocessing Realistic Report 1")
+    plt.xlabel("Gaussian Kernel ")
+    plt.title("Comparing Gaussian Factor for Preprocessing Realistic Report 1")
     plt.legend()
     plt.show()
 
@@ -245,6 +290,65 @@ def optimize_single_method(file):
     plt.ylabel('Accuracy (%)')
     plt.legend()
     plt.savefig('Modeling_graphs/MedianErosion_Test_Report_body_1_sp.jpg')
+    plot_modelling(value_dict.get_value_list('gaussian'), seq_accuracies, lev_accuracies)
+
+
+
+def write_results_file(value_dict, image_name,
+                       seq_for_max_seq, lev_for_max_seq, best_seq_vals,
+                       lev_for_max_lev, seq_for_max_lev, best_lev_vals,
+                       best_combined_accs, lev_for_max_combined, seq_for_max_combined, best_combined_vals):
+
+    now = datetime.now()
+
+    # dd/mm/YY H:M:S
+    dt = now.strftime("_%d_%m_%Y_%H-%M-%S")
+    file = open('modelling_results/' + dt + '.txt', "w+")
+
+    file.write('This test was run on the file: {}\n'.format(image_name))
+
+    file.write('\nThe options for each processing method were:\n'.format(image_name))
+
+    for method in value_dict.keys():
+        file.write("{}:  {}\n".format(method, value_dict[method]))
+
+
+    file.write("\n\n\n----------------------------------------------------------------\n\n")
+
+    file.write("\nBest seq accuracy was {} ".format(seq_for_max_seq * 100))
+    file.write("\nCorresponting lev accuracy was {}".format(lev_for_max_seq * 100))
+    file.write("\nThe values that provided this maximum were: ")
+    file.write("\nSharpen Factor {}".format(best_seq_vals[0]))
+    file.write("\nContrast Factor {}".format(best_seq_vals[1]))
+    file.write("\nBrighten Factor {}".format(best_seq_vals[2]))
+    file.write("\nGaussian Kernel {}".format(best_seq_vals[3]))
+    file.write("\nRescale Factor {}".format(best_seq_vals[4]))
+
+    file.write("\n\n\n----------------------------------------------------------------\n\n")
+
+    file.write("\nBest lev accuracy was {} ".format(lev_for_max_lev * 100))
+    file.write("\nCorresponting seq accuracy was {}".format(seq_for_max_lev * 100))
+    file.write("\nThe values that provided this maximum were: ")
+    file.write("\nSharpen Factor {}".format(best_lev_vals[0]))
+    file.write("\nContrast Factor {}".format(best_lev_vals[1]))
+    file.write("\nBrighten Factor {}".format(best_lev_vals[2]))
+    file.write("\nGaussian Kernel {}".format(best_lev_vals[3]))
+    file.write("\nRescale Factor {}".format(best_lev_vals[4]))
+
+    file.write("\n\n\n----------------------------------------------------------------\n\n")
+
+    file.write("\nBest combined accuracy was ".format(best_combined_accs * 100))
+    file.write("\nCorresponting lev accuracy was {}".format(lev_for_max_combined * 100))
+    file.write("\nCorresponting seq accuracy was {}".format(seq_for_max_combined * 100))
+    file.write("\nThe values that provided this maximum were: ")
+    file.write("\nSharpen Factor {}".format(best_combined_vals[0]))
+    file.write("\nContrast Factor {}".format(best_combined_vals[1]))
+    file.write("\nBrighten Factor {}".format(best_combined_vals[2]))
+    file.write("\nGaussian Kernel {}".format(best_combined_vals[3]))
+    file.write("\nRescale Factor {}".format(best_combined_vals[4]))
+
+    file.write("\n\n\n----------------------------------------------------------------\n\n")
+
 
 
 class TestValueDict:
@@ -272,11 +376,23 @@ class TestValueDict:
     # 'brighten': [0.5, 1, 1.5, 2, 2.5, 3],
     # 'contrast': [0.5, 1, 1.5, 2, 2.5, 3],
     # 'sharpen': [0.5, 1, 1.5, 2, 2.5, 3],
-    # 'averaging': [1, 3, 5, 7, 9],
-    # 'median': [1, 3, 5, 7, 9],
-    # 'closing': [1, 3, 5, 7]
-  #  'contrast': [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 2.25, 2.5, 2.75, 3],
-#[0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 2.25, 2.5, 2.75, 3, 3.25, 3.5, 3.75, 4],
+
+
+        quick_for_testing = { 'gaussian': [1, 3],
+                              'rescale': [1, 1.5],
+                              'brighten': [1, 1.5],
+                              'contrast': [1, 1.5],
+                              'sharpen': [1, 1.5]}
+
+        actual_big_test = {'gaussian': [1, 3, 5, 7],
+                           'rescale': [0.5, 1, 1.5, 2, 2.5, 3],
+                           'brighten': [0.5, 1, 1.5, 2, 2.5, 3],
+                           'contrast': [0.5, 1, 1.5, 2, 2.5, 3],
+                           'sharpen': [0.5, 1, 1.5, 2, 2.5, 3]}
+
+        self.value_dict = actual_big_test
+
+
     def get_value_list(self, value_type):
         return self.value_dict[value_type]
 

@@ -1,0 +1,53 @@
+This test was run on the file: Turnbull_2.jpg
+
+The options for each processing method were:
+gaussian:  [1, 3, 5, 7]
+rescale:  [0.5, 1, 1.5, 2, 2.5, 3]
+brighten:  [0.5, 1, 1.5, 2, 2.5, 3]
+contrast:  [0.5, 1, 1.5, 2, 2.5, 3]
+sharpen:  [0.5, 1, 1.5, 2, 2.5, 3]
+
+
+
+----------------------------------------------------------------
+
+
+Best seq accuracy was 92.42333132892362 
+Corresponting lev accuracy was 93.56584485868912
+The values that provided this maximum were: 
+Sharpen Factor 0.5
+Contrast Factor 2
+Brighten Factor 0.5
+Gaussian Kernel 1
+Rescale Factor 3
+
+
+----------------------------------------------------------------
+
+
+Best lev accuracy was 94.14238510063082 
+Corresponting seq accuracy was 89.87683989185942
+The values that provided this maximum were: 
+Sharpen Factor 1.5
+Contrast Factor 1.5
+Brighten Factor 0.5
+Gaussian Kernel 3
+Rescale Factor 2.5
+
+
+----------------------------------------------------------------
+
+
+Best combined accuracy was 
+Corresponting lev accuracy was 93.56584485868912
+Corresponting seq accuracy was 92.42333132892362
+The values that provided this maximum were: 
+Sharpen Factor 0.5
+Contrast Factor 2
+Brighten Factor 0.5
+Gaussian Kernel 1
+Rescale Factor 3
+
+
+----------------------------------------------------------------
+

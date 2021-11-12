@@ -15,6 +15,9 @@ prepped_pics/*
 pics_for_pillowing/*
 Test_output_pics/*
 Modeling_graphs/*
+temporary/*
+temporary_acc_total.py
+test.txt
 
 # Distribution / packaging
 .Python
