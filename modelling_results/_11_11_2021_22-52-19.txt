@@ -1,0 +1,53 @@
+This test was run on the file: report_body_1.jpg
+
+The options for each processing method were:
+gaussian:  [1, 3]
+rescale:  [1, 1.5]
+brighten:  [1, 1.5]
+contrast:  [1, 1.5]
+sharpen:  [1, 1.5]
+
+
+
+----------------------------------------------------------------
+
+
+Best seq accuracy was 92.15086646279306 
+Corresponting lev accuracy was 97.72341148487938
+The values that provided this maximum were: 
+Sharpen Factor 1
+Contrast Factor 1.5
+Brighten Factor 1
+Gaussian Kernel 1
+Rescale Factor 1
+
+
+----------------------------------------------------------------
+
+
+Best lev accuracy was 97.72341148487938 
+Corresponting seq accuracy was 92.15086646279306
+The values that provided this maximum were: 
+Sharpen Factor 1
+Contrast Factor 1.5
+Brighten Factor 1
+Gaussian Kernel 1
+Rescale Factor 1
+
+
+----------------------------------------------------------------
+
+
+Best combined accuracy was 
+Corresponting lev accuracy was 97.72341148487938
+Corresponting seq accuracy was 92.15086646279306
+The values that provided this maximum were: 
+Sharpen Factor 1
+Contrast Factor 1.5
+Brighten Factor 1
+Gaussian Kernel 1
+Rescale Factor 1
+
+
+----------------------------------------------------------------
+

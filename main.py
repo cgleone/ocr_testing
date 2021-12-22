@@ -23,8 +23,8 @@ def get_text(file, test_value_dict):
 
 
     img = pre.greyscale(img) # always leave on
-    # img = pre.rescale(img, test_value_dict.get_value('rescale'))
-     # img = pre.rescale(img, 2)
+   # img = pre.rescale(img, test_value_dict.get_value('rescale'))
+    img = pre.rescale(img, 1.5)
 
     # NOW MAKE IT A PILLOW
 
@@ -35,9 +35,9 @@ def get_text(file, test_value_dict):
     # pil_img = pre.brighten(pil_img, test_value_dict.get_value('brighten'))
     # pil_img = pre.contrast(pil_img, test_value_dict.get_value('contrast'))
 
-    # pil_img = pre.sharpen(pil_img, 3)
-    # pil_img = pre.brighten(pil_img, 1.5)
-    # pil_img = pre.contrast(pil_img, 3)
+    pil_img = pre.sharpen(pil_img, 3)
+    pil_img = pre.brighten(pil_img, 1.5)
+    pil_img = pre.contrast(pil_img, 2.5)
 
     # BACK TO OPENCV NOW
     img = np.array(pil_img)  # alrighty done it's a opencv now
@@ -46,6 +46,7 @@ def get_text(file, test_value_dict):
 
    # img = pre.closing(img, test_value_dict.get_value('closing'))
     img = pre.gaussian_blur(img, test_value_dict.get_value('gaussian'))
+   # img = pre.gaussian_blur(img, 1)
 
     #img = pre.median_blur(img, test_value_dict.get_value('median'))
     #img = pre.averaging_blur(img, test_value_dict.get_value('averaging'))
@@ -134,7 +135,7 @@ def prep_image(file, noisify=False):
 
     if noisify:
         with Image.open(path) as img:
-            result = accuracy.noisify(img, rotation=76, brightness=1, contrast=1, sharpness=1)
+            result = accuracy.noisify(img, rotation=72, brightness=1, contrast=1, sharpness=1)
             # result.show()
     else:
         result = Image.open(path)
@@ -150,16 +151,19 @@ def prep_image(file, noisify=False):
 
 if __name__ == '__main__':
 
-    file = '12486 3 anon.pdf'
-    new_file = prep_image(file, noisify=False)
+    file = '12486 4 anon.pdf'
+    #file = 'report_body_1.jpg'
+    #file = 'Turnbull_2.pdf'
+    new_file = prep_image(file, noisify=True)
 
 
     start_time = time.time()
 
     get_text(new_file, accuracy.TestValueDict())
 
-    #accuracy.compare_kernels(new_file)
-    #accuracy.optimize_single_method(new_file)
+   # accuracy.compare_kernels(new_file)
+   # accuracy.optimize_single_method(new_file)
+
 
     executionTime = (time.time() - start_time)
     print("Execution Time: {} seconds".format(round(executionTime, 2)))
