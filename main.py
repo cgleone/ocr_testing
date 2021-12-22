@@ -25,31 +25,47 @@ def get_text(file, test_value_dict):
     img = pre.greyscale(img) # always leave on
    # img = pre.rescale(img, test_value_dict.get_value('rescale'))
     img = pre.rescale(img, 1.5)
+    # img = pre.rescale(img, test_value_dict.get_value('rescale'))
 
     # NOW MAKE IT A PILLOW
 
     pillow_path = save_for_pillowing(img, file)
     pil_img = get_pil_img(pillow_path)
-    #
-    # pil_img = pre.sharpen(pil_img, test_value_dict.get_value('sharpen'))
-    # pil_img = pre.brighten(pil_img, test_value_dict.get_value('brighten'))
-    # pil_img = pre.contrast(pil_img, test_value_dict.get_value('contrast'))
+
+
+    pil_img = pre.sharpen(pil_img, test_value_dict.get_value('sharpen'))
+    pil_img = pre.brighten(pil_img, test_value_dict.get_value('brighten'))
+    pil_img = pre.contrast(pil_img, test_value_dict.get_value('contrast'))
 
     pil_img = pre.sharpen(pil_img, 3)
     pil_img = pre.brighten(pil_img, 1.5)
     pil_img = pre.contrast(pil_img, 2.5)
 
     # BACK TO OPENCV NOW
-    img = np.array(pil_img)  # alrighty done it's a opencv now
+    # img = np.array(pil_img)  # alrighty done it's a opencv now
 
     img = pre.thresholding(img) # always leave on
 
    # img = pre.closing(img, test_value_dict.get_value('closing'))
     img = pre.gaussian_blur(img, test_value_dict.get_value('gaussian'))
    # img = pre.gaussian_blur(img, 1)
+    # img = pre.gaussian_blur(img, test_value_dict.get_value('gaussian'))
+    img = pre.median_blur(img, test_value_dict.get_value('median'))
 
-    #img = pre.median_blur(img, test_value_dict.get_value('median'))
-    #img = pre.averaging_blur(img, test_value_dict.get_value('averaging'))
+    # img = pre.closing(img, test_value_dict.get_value('closing'))
+
+    # img = pre.gaussian_blur(img, test_value_dict.get_value('gaussian'))
+    #cv2.imwrite('Modeling_graphs/9x9 Gaussian pdf.jpg', img)
+    img = pre.erode(img, test_value_dict.get_value('erosion'))
+    save_preprocessing_img(img, test_value_dict)
+    # img = pre.dilate(img, test_value_dict.get_value('dilation'))
+
+
+    # img = pre.median_blur(img, test_value_dict.get_value('median'))
+    # img = pre.averaging_blur(img, test_value_dict.get_value('averaging'))
+
+    # cv2.imshow('image', img)
+    # cv2.waitKey(0)
 
     #img = pre.canny(img)
     #img = pre.erode(img)
@@ -65,6 +81,12 @@ def get_text(file, test_value_dict):
     print(accuracies)
 
     return accuracies
+
+def save_preprocessing_img(img, test_value_dict):
+    iter_value = str(test_value_dict.get_value('erosion'))
+    pic_name = 'Test_output_pics/TestMedian3Erosion' + iter_value + '.jpg'
+    cv2.imwrite(pic_name, img)
+
 
 def convert_pdf(path):
     new_name = get_new_name(path)
@@ -151,19 +173,20 @@ def prep_image(file, noisify=False):
 
 if __name__ == '__main__':
 
+
     file = '12486 4 anon.pdf'
     #file = 'report_body_1.jpg'
     #file = 'Turnbull_2.pdf'
-    new_file = prep_image(file, noisify=True)
+    new_file = prep_image(file, noisify=False)
+
 
 
     start_time = time.time()
 
     get_text(new_file, accuracy.TestValueDict())
 
-   # accuracy.compare_kernels(new_file)
-   # accuracy.optimize_single_method(new_file)
 
+    accuracy.optimize_single_method(new_file)
 
     executionTime = (time.time() - start_time)
     print("Execution Time: {} seconds".format(round(executionTime, 2)))

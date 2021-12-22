@@ -181,6 +181,61 @@ def compare_kernels(file):
 
 
 
+def two_methods(file):
+    value_dict = TestValueDict()
+
+    lev_accuracies = []
+    seq_accuracies = []
+    best_seq_vals = [0, 0]
+    best_lev_vals = [0, 0]
+
+    seq_for_max_seq = 0
+    lev_for_max_seq = 0
+    seq_for_max_lev = 0
+    lev_for_max_lev = 0
+
+    for gauss_val in value_dict.get_value_list('median'):
+        for closing_val in value_dict.get_value_list('closing'):
+
+            seq, lev = get_text(file, value_dict)
+            lev_accuracies.append(lev * 100)
+            seq_accuracies.append(seq * 100)
+            preprocessing.method_list.clear()
+
+            if seq > seq_for_max_seq:
+                seq_for_max_seq = seq
+                lev_for_max_seq = lev
+                best_seq_vals = [gauss_val, closing_val]
+            if lev > lev_for_max_lev:
+                lev_for_max_lev = lev
+                seq_for_max_lev = seq
+                best_lev_vals = [gauss_val, closing_val]
+
+            value_dict.inc_location_in_list('closing')
+
+        value_dict.reset_location_in_list('closing')
+        value_dict.inc_location_in_list('median')
+
+    print("\n\n----------------------------------------------------------------\n\n")
+
+    print("Best seq accuracy was {} ".format(seq_for_max_seq * 100))
+    print("Corresponting lev accuracy was {}".format(lev_for_max_seq * 100))
+    print("The values that provided this maximum were: ")
+    print("Median Kernel {}".format(best_seq_vals[0]))
+    print("Closing Kernal {}".format(best_seq_vals[1]))
+
+    print("\n\n----------------------------------------------------------------\n\n")
+
+    print("Best lev accuracy was {} ".format(lev_for_max_lev * 100))
+    print("Corresponting seq accuracy was {}".format(seq_for_max_lev * 100))
+    print("The values that provided this maximum were: ")
+    print("Median Kernel {}".format(best_lev_vals[0]))
+    print("Closing Kernal {}".format(best_lev_vals[1]))
+
+
+    print("\n\n----------------------------------------------------------------\n\n")
+
+
 
 def plot_modelling(kernels, seq, lev):
     plt.plot(kernels, seq, label='SequenceMatcher Accuracy')
@@ -198,12 +253,12 @@ def optimize_single_method(file):
     lev_accuracies = []
     seq_accuracies = []
 
-    for kernel in value_dict.get_value_list('gaussian'):
+    for kernel in value_dict.get_value_list('erosion'):
         seq, lev = get_text(file, value_dict)
         lev_accuracies.append(lev * 100)
         seq_accuracies.append(seq * 100)
         preprocessing.method_list.clear()
-        value_dict.inc_location_in_list('gaussian')
+        value_dict.inc_location_in_list('erosion')
 
 
     rounded_lev = []
@@ -218,6 +273,13 @@ def optimize_single_method(file):
     print("Lev accuracies: {}".format(rounded_lev))
     print("Seq accuracies: {}".format(rounded_seq))
 
+    plt.plot(value_dict.get_value_list('erosion'), lev_accuracies, label='Levenshtein Accuracy')
+    plt.plot(value_dict.get_value_list('erosion'), seq_accuracies, label='Sequence Matcher Accuracy')
+    plt.title('OCR Accuracy vs Erosion Kernel')
+    plt.xlabel('Erosion Kernel')
+    plt.ylabel('Accuracy (%)')
+    plt.legend()
+    plt.savefig('Modeling_graphs/MedianErosion_Test_Report_body_1_sp.jpg')
     plot_modelling(value_dict.get_value_list('gaussian'), seq_accuracies, lev_accuracies)
 
 
@@ -284,9 +346,27 @@ class TestValueDict:
 
         self.set_value_lists()
         self.location_in_lists = {'gaussian': 0, 'rescale': 0, 'brighten': 0, 'contrast': 0, 'sharpen': 0,
-                                  'averaging': 0, 'median': 0, 'closing': 0}
+                                  'averaging': 0, 'median': 0, 'closing': 0, 'erosion': 0, 'dilation': 0}
 
     def set_value_lists(self):
+        self.value_dict = {'gaussian': [1,3,5,7,9],
+                            'rescale': [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 2.25, 2.5, 2.75, 3, 3.25, 3.5, 3.75, 4],
+                            'brighten': [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 2.25, 2.5, 2.75, 3, 3.25, 3.5, 3.75, 4],
+                           'contrast': [ 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 2.25, 2.5, 2.75, 3, 3.25, 3.5, 3.75, 4],
+                            'sharpen': [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 2.25, 2.5, 2.75, 3, 3.25, 3.5, 3.75, 4],
+
+                           'averaging': [1, 3, 5, 7, 9],
+                           'median': [1, 3, 5, 7, 9],
+                           'closing': [1, 3, 5, 7, 9],
+                           'erosion': [1,2,3,5,7,9],
+                           'dilation': [1,3,5,7,9]
+                       }
+
+    # 'rescale': [0.5, 1, 1.5, 2, 2.5, 3],
+    # 'brighten': [0.5, 1, 1.5, 2, 2.5, 3],
+    # 'contrast': [0.5, 1, 1.5, 2, 2.5, 3],
+    # 'sharpen': [0.5, 1, 1.5, 2, 2.5, 3],
+
 
         quick_for_testing = { 'gaussian': [1, 3],
                               'rescale': [1, 1.5],
@@ -302,14 +382,7 @@ class TestValueDict:
 
         self.value_dict = actual_big_test
 
-    # 'averaging': [1, 3, 5, 7, 9],
-    # 'median': [1, 3, 5, 7, 9],
-    # 'closing': [1, 3, 5, 7]
-    # 'averaging': [1, 3, 5, 7, 9],
-    # 'median': [1, 3, 5, 7, 9],
-    # 'closing': [1, 3, 5, 7]
-  #  'contrast': [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 2.25, 2.5, 2.75, 3],
-#[0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 2.25, 2.5, 2.75, 3, 3.25, 3.5, 3.75, 4],
+
     def get_value_list(self, value_type):
         return self.value_dict[value_type]
 
