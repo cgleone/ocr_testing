@@ -20,7 +20,8 @@ def get_text(file, test_value_dict):
     # cv2.waitKey(0)
 
     img = pre.deskew(img) # always leave on
-
+    # cv2.imshow('image', img)
+    # cv2.waitKey(0)
 
     img = pre.greyscale(img) # always leave on
     # img = pre.rescale(img, test_value_dict.get_value('rescale'))
@@ -44,20 +45,23 @@ def get_text(file, test_value_dict):
 
     img = pre.thresholding(img) # always leave on
 
+
     # img = pre.gaussian_blur(img, test_value_dict.get_value('gaussian'))
-    img = pre.median_blur(img, test_value_dict.get_value('median'))
+
+    # img = pre.median_blur(img, test_value_dict.get_value('median'))
+    # save_preprocessing_img(img, test_value_dict)
 
     # img = pre.closing(img, test_value_dict.get_value('closing'))
 
 
     # img = pre.gaussian_blur(img, test_value_dict.get_value('gaussian'))
     #cv2.imwrite('Modeling_graphs/9x9 Gaussian pdf.jpg', img)
-    img = pre.erode(img, test_value_dict.get_value('erosion'))
-    save_preprocessing_img(img, test_value_dict)
+    # img = pre.erode(img, test_value_dict.get_value('erosion'))
+
     # img = pre.dilate(img, test_value_dict.get_value('dilation'))
 
 
-    # img = pre.median_blur(img, test_value_dict.get_value('median'))
+    img = pre.median_blur(img, test_value_dict.get_value('median'))
     # img = pre.averaging_blur(img, test_value_dict.get_value('averaging'))
 
     # cv2.imshow('image', img)
@@ -79,8 +83,8 @@ def get_text(file, test_value_dict):
     return accuracies
 
 def save_preprocessing_img(img, test_value_dict):
-    iter_value = str(test_value_dict.get_value('erosion'))
-    pic_name = 'Test_output_pics/TestMedian3Erosion' + iter_value + '.jpg'
+    iter_value = str(test_value_dict.get_value('median'))
+    pic_name = 'Test_output_pics/turnbull_median' + iter_value + '.jpg'
     cv2.imwrite(pic_name, img)
 
 
@@ -170,18 +174,18 @@ def prep_image(file, noisify=False):
 if __name__ == '__main__':
 
 
-    file = 'report_body_1_spr.jpg'
+    file = '12486 4 anon.pdf'
     new_file = prep_image(file, noisify=False)
 
 
     start_time = time.time()
 
-    get_text(new_file, accuracy.TestValueDict())
+    # get_text(new_file, accuracy.TestValueDict())
 
     #accuracy.compare_kernels(new_file)
-
     accuracy.optimize_single_method(new_file)
-    # accuracy.two_methods(new_file)
+    #accuracy.two_methods(new_file)
+    #accuracy.optimized_values_test(new_file)
 
     executionTime = (time.time() - start_time)
     print("Execution Time: {} seconds".format(round(executionTime, 2)))
