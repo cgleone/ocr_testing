@@ -24,21 +24,23 @@ def get_text(file, test_value_dict):
     # cv2.waitKey(0)
 
     img = pre.greyscale(img) # always leave on
+   # img = pre.rescale(img, test_value_dict.get_value('rescale'))
+    img = pre.rescale(img, 1.5)
     # img = pre.rescale(img, test_value_dict.get_value('rescale'))
 
     # NOW MAKE IT A PILLOW
 
-    # pillow_path = save_for_pillowing(img, file)
-    # pil_img = get_pil_img(pillow_path)
+    pillow_path = save_for_pillowing(img, file)
+    pil_img = get_pil_img(pillow_path)
 
 
-    # pil_img = pre.sharpen(pil_img, test_value_dict.get_value('sharpen'))
-    # pil_img = pre.brighten(pil_img, test_value_dict.get_value('brighten'))
-    # pil_img = pre.contrast(pil_img, test_value_dict.get_value('contrast'))
+    pil_img = pre.sharpen(pil_img, test_value_dict.get_value('sharpen'))
+    pil_img = pre.brighten(pil_img, test_value_dict.get_value('brighten'))
+    pil_img = pre.contrast(pil_img, test_value_dict.get_value('contrast'))
 
-    # pil_img = pre.sharpen(pil_img, 3)
-    # pil_img = pre.brighten(pil_img, 1.5)
-    # pil_img = pre.contrast(pil_img, 3)
+    pil_img = pre.sharpen(pil_img, 3)
+    pil_img = pre.brighten(pil_img, 1.5)
+    pil_img = pre.contrast(pil_img, 2.5)
 
     # BACK TO OPENCV NOW
     # img = np.array(pil_img)  # alrighty done it's a opencv now
@@ -46,13 +48,15 @@ def get_text(file, test_value_dict):
     img = pre.thresholding(img) # always leave on
 
 
+   # img = pre.closing(img, test_value_dict.get_value('closing'))
+    img = pre.gaussian_blur(img, test_value_dict.get_value('gaussian'))
+   # img = pre.gaussian_blur(img, 1)
     # img = pre.gaussian_blur(img, test_value_dict.get_value('gaussian'))
 
     # img = pre.median_blur(img, test_value_dict.get_value('median'))
     # save_preprocessing_img(img, test_value_dict)
 
     # img = pre.closing(img, test_value_dict.get_value('closing'))
-
 
     # img = pre.gaussian_blur(img, test_value_dict.get_value('gaussian'))
     #cv2.imwrite('Modeling_graphs/9x9 Gaussian pdf.jpg', img)
@@ -157,7 +161,7 @@ def prep_image(file, noisify=False):
 
     if noisify:
         with Image.open(path) as img:
-            result = accuracy.noisify(img, rotation=76, brightness=1, contrast=1, sharpness=1)
+            result = accuracy.noisify(img, rotation=72, brightness=1, contrast=1, sharpness=1)
             # result.show()
     else:
         result = Image.open(path)
@@ -178,6 +182,7 @@ if __name__ == '__main__':
     new_file = prep_image(file, noisify=False)
 
 
+
     start_time = time.time()
 
     # get_text(new_file, accuracy.TestValueDict())
@@ -186,6 +191,7 @@ if __name__ == '__main__':
     accuracy.optimize_single_method(new_file)
     #accuracy.two_methods(new_file)
     #accuracy.optimized_values_test(new_file)
+
 
     executionTime = (time.time() - start_time)
     print("Execution Time: {} seconds".format(round(executionTime, 2)))

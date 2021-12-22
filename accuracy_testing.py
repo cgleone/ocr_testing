@@ -93,9 +93,6 @@ def compare_kernels(file):
     best_combined_accs = 0
 
     count = 1
-    #
-    # files = os.listdir("temporary")
-    # files = sorted(files, key=file_date_key)
 
     for rescale_val in value_dict.get_value_list('rescale'):
         for gaus_val in value_dict.get_value_list('gaussian'):
@@ -104,12 +101,7 @@ def compare_kernels(file):
                     for sharp_val in value_dict.get_value_list('sharpen'):
 
                         print("\nI'm on iteration number {}\n".format(count))
-                        # update_file("temporary/" + files[count-1], "sharp val: " + str(sharp_val))
-                        # update_file("temporary/" + files[count-1], "contrast val: " + str(cont_val))
-                        # update_file("temporary/" + files[count-1], "brightness val: " + str(bright_val))
-                        #
                         count = count + 1
-
 
                         seq, lev = get_text(file, value_dict)
                         lev_accuracies.append(lev * 100)
@@ -124,14 +116,12 @@ def compare_kernels(file):
                             lev_for_max_lev = lev
                             seq_for_max_lev = seq
                             best_lev_vals = [sharp_val, cont_val, bright_val, gaus_val, rescale_val]
-
                         combined_accs = seq + lev
                         if combined_accs > best_combined_accs:
                             seq_for_max_combined = seq
                             lev_for_max_combined = lev
                             best_combined_accs = combined_accs
                             best_combined_vals = [sharp_val, cont_val, bright_val, gaus_val, rescale_val]
-                        combined_accs = 0
 
                         value_dict.inc_location_in_list('sharpen')
 

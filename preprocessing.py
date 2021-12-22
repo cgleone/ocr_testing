@@ -30,8 +30,8 @@ def recursive_deskew(img, angle, deskew_angles):
 
 def deskew(image):
     #
-    # cv2.imshow('image', image)
-    # cv2.waitKey(0)
+    cv2.imshow('image', image)
+    cv2.waitKey(0)
     img_for_contours = image.copy()
     skew_angle_list = []
     angle_from_axis, skew_angle_list = get_skew_angle(img_for_contours, skew_angle_list)
@@ -44,9 +44,9 @@ def deskew(image):
     angle_by_text = get_text_rotation(axis_aligned_img)
     fully_aligned_img = rotate(axis_aligned_img, angle_by_text)
 
-    # cv2.imshow('fully aligned image', fully_aligned_img)
-    # cv2.waitKey(0)
-    # cv2.destroyAllWindows()
+    cv2.imshow('fully aligned image', fully_aligned_img)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
 
     method_list.append("Deskewed from an angle of {}".format(sum(skew_angle_list)))
 
@@ -155,24 +155,28 @@ def get_skew_angle(image, deskew_angles):
     gray = cv2.cvtColor(new_image, cv2.COLOR_BGR2GRAY)
     blur = cv2.GaussianBlur(gray, (9, 9), 0)
     thresh = cv2.threshold(blur, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)[1]
-    # cv2.imshow('threshed', thresh)
-    # cv2.waitKey(0)
+    cv2.imshow('threshed', thresh)
+    cv2.waitKey(0)
 
     # Apply dilate to merge text into meaningful lines/paragraphs.
     # Use larger kernel on X axis to merge characters into single line, cancelling out any spaces.
     # But use smaller kernel on Y axis to separate between different blocks of text
     kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (20, 3))
     dilate = cv2.dilate(thresh, kernel, iterations=5)
-
-    # cv2.imshow('dilated', dilate)
-    # cv2.waitKey(0)
-    # cv2.destroyAllWindows()
+    #
+    cv2.imshow('dilated', dilate)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
 
     # Find all contours
     contours, hierarchy = cv2.findContours(dilate, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
     contours = sorted(contours, key = cv2.contourArea, reverse = True)
     for contour in contours:
-        cv2.drawContours(image, contour, -1, (0, 255, 0), 3)
+        cv2.drawContours(dilate, contour, -1, (0, 255, 0), 3)
+    #
+    cv2.imshow('contours', dilate)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
 
     contour_angles = []
     original_contour_angles = []
